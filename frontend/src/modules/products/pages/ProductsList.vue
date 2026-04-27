@@ -176,16 +176,12 @@ onMounted(async () => {
             <div class="row g-3">
               <div class="col-12">
                 <label class="form-label">Nombre</label>
-                <select v-model="form.name" class="form-select">
-                  <option value="">Selecciona un producto</option>
-                  <option
-                    v-for="product in products"
-                    :key="product.productId"
-                    :value="product.name"
-                  >
-                    {{ product.name }}
-                  </option>
-                </select>
+                <input
+                  v-model="form.name"
+                  type="text"
+                  class="form-control"
+                  placeholder="Escribe el nombre del producto"
+                />
               </div>
 
               <div class="col-12">
