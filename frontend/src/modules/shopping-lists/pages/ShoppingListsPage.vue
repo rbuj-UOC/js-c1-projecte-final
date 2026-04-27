@@ -8,10 +8,12 @@ import {
   deleteShoppingList,
   getShoppingLists,
 } from "@/modules/shopping-lists/services/shopping-lists.service";
+import { useConfirmDialog } from "@/common/composables/useConfirmDialog";
 import type { CreateShoppingListDto } from "../models/create-shopping-list.dto";
 import type { ShoppingList } from "../models/shopping-list.model";
 
 const toast = useToast();
+const confirmDialog = useConfirmDialog();
 
 const lists = ref<ShoppingList[]>([]);
 const loading = ref(false);
@@ -66,7 +68,15 @@ async function onCreate() {
 }
 
 async function onDelete(listId: string) {
-  if (!window.confirm("¿Quieres eliminar esta lista de compra?")) return;
+  const confirmed = await confirmDialog.confirm({
+    title: "Eliminar lista",
+    message: "¿Quieres eliminar esta lista de compra?",
+    confirmText: "Eliminar",
+    cancelText: "Cancelar",
+    variant: "danger",
+  });
+
+  if (!confirmed) return;
 
   try {
     await deleteShoppingList(listId);

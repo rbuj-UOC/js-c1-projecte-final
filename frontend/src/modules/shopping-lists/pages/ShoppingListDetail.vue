@@ -4,6 +4,7 @@ import { useToast } from "@/common/composables/useToast";
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { getProducts } from "@/modules/products/services/products.service";
+import { useConfirmDialog } from "@/common/composables/useConfirmDialog";
 import type { Product } from "@/modules/products/models/product.model";
 import {
   addShoppingListItem,
@@ -18,6 +19,7 @@ const props = defineProps<{ id: string }>();
 
 const router = useRouter();
 const toast = useToast();
+const confirmDialog = useConfirmDialog();
 
 const loading = ref(false);
 const savingList = ref(false);
@@ -137,7 +139,15 @@ async function onAddItem() {
 
 async function onDeleteItem(itemId: string) {
   if (!list.value) return;
-  if (!window.confirm("¿Quieres eliminar este producto de la lista?")) return;
+  const confirmed = await confirmDialog.confirm({
+    title: "Eliminar producto",
+    message: "¿Quieres eliminar este producto de la lista?",
+    confirmText: "Eliminar",
+    cancelText: "Cancelar",
+    variant: "danger",
+  });
+
+  if (!confirmed) return;
 
   const previousList = list.value;
   savingItemId.value = itemId;
@@ -172,7 +182,15 @@ async function onDeleteItem(itemId: string) {
 
 async function onDeleteList() {
   if (!list.value) return;
-  if (!window.confirm("¿Quieres eliminar esta lista?")) return;
+  const confirmed = await confirmDialog.confirm({
+    title: "Eliminar lista",
+    message: "¿Quieres eliminar esta lista?",
+    confirmText: "Eliminar",
+    cancelText: "Cancelar",
+    variant: "danger",
+  });
+
+  if (!confirmed) return;
 
   deletingList.value = true;
   try {

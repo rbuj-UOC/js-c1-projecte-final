@@ -8,12 +8,14 @@ import {
   seedCurrentUserData,
   updateCurrentUser,
 } from "@/modules/auth/services/user.service";
+import { useConfirmDialog } from "@/common/composables/useConfirmDialog";
 import type { UpdateUserDto } from "@/modules/auth/models/update-user.dto";
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const toast = useToast();
+const confirmDialog = useConfirmDialog();
 
 const loading = ref(false);
 const saving = ref(false);
@@ -79,7 +81,15 @@ async function onSave() {
 }
 
 async function onResetData() {
-  if (!window.confirm("¿Seguro que quieres eliminar todos tus datos?")) return;
+  const confirmed = await confirmDialog.confirm({
+    title: "Eliminar datos",
+    message: "¿Seguro que quieres eliminar todos tus datos?",
+    confirmText: "Eliminar",
+    cancelText: "Cancelar",
+    variant: "danger",
+  });
+
+  if (!confirmed) return;
 
   actionLoading.value = true;
   try {
@@ -93,7 +103,15 @@ async function onResetData() {
 }
 
 async function onSeedData() {
-  if (!window.confirm("¿Quieres cargar los datos de ejemplo?")) return;
+  const confirmed = await confirmDialog.confirm({
+    title: "Cargar datos de ejemplo",
+    message: "¿Quieres cargar los datos de ejemplo?",
+    confirmText: "Cargar",
+    cancelText: "Cancelar",
+    variant: "warning",
+  });
+
+  if (!confirmed) return;
 
   actionLoading.value = true;
   try {

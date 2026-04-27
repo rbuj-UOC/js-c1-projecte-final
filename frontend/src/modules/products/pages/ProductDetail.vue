@@ -9,6 +9,7 @@ import {
   getProductUnits,
   updateProduct,
 } from "@/modules/products/services/products.service";
+import { useConfirmDialog } from "@/common/composables/useConfirmDialog";
 import type { Product } from "../models/product.model";
 import type { ProductUnit } from "../models/product-unit.model";
 
@@ -16,6 +17,7 @@ const props = defineProps<{ id: string }>();
 
 const router = useRouter();
 const toast = useToast();
+const confirmDialog = useConfirmDialog();
 
 const loading = ref(false);
 const saving = ref(false);
@@ -102,7 +104,15 @@ async function onSave() {
 
 async function onDelete() {
   if (!product.value) return;
-  if (!window.confirm("¿Seguro que quieres eliminar este producto?")) return;
+  const confirmed = await confirmDialog.confirm({
+    title: "Eliminar producto",
+    message: "¿Seguro que quieres eliminar este producto?",
+    confirmText: "Eliminar",
+    cancelText: "Cancelar",
+    variant: "danger",
+  });
+
+  if (!confirmed) return;
 
   deleting.value = true;
   try {
