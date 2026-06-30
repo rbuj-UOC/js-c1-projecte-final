@@ -14,5 +14,6 @@
   "editor.rulers": [
     80,
     120
-  ]
+  ],
+  "material-icon-theme.activeIconPack": "vue"
 }
